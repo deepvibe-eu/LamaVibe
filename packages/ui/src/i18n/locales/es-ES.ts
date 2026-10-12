@@ -1421,6 +1421,10 @@ const esES: Record<string, string> = {
   "codeViewer.pdf.zoomIn": "Acercar",
   "codeViewer.pdf.zoomOut": "Alejar",
   "codeViewer.officeUnavailable": "Este archivo de Office no se puede previsualizar.",
+  "codeViewer.epubUnavailable": "No se pudo abrir este libro electrónico.",
+  "codeViewer.epub.chapters": "Capítulos: {count}",
+  "codeViewer.epub.prevChapter": "Capítulo anterior",
+  "codeViewer.epub.nextChapter": "Capítulo siguiente",
   "codeViewer.officeTooLarge":
     "Este archivo de Office es demasiado grande para previsualizarlo (25 MB como máximo).",
   "codeViewer.excel.sheetTabs": "Hojas del libro",
@@ -1459,6 +1463,7 @@ const esES: Record<string, string> = {
   "codeViewer.viewCode": "Ver código",
   "codeViewer.viewDiff": "Ver diff",
   "codeViewer.openSourcePreview": "Vista previa del código fuente",
+  "codeViewer.openInBrowser": "Abrir en el navegador",
   "codeViewer.markdownMode": "Markdown",
   "codeViewer.markdownPreview": "Vista previa",
   "codeViewer.markdownSource": "Fuente",
@@ -1466,6 +1471,19 @@ const esES: Record<string, string> = {
   "codeViewer.svgPreview": "Vista previa",
   "codeViewer.svgSource": "Código",
   "codeViewer.wrapLines": "Ajustar líneas",
+  "codeViewer.editMode": "Editar",
+  "codeViewer.viewMode": "Ver",
+  "codeViewer.undo": "Deshacer",
+  "codeViewer.redo": "Rehacer",
+  "codeViewer.save": "Guardar",
+  "codeViewer.saving": "Guardando…",
+  "codeViewer.saved": "Archivo guardado",
+  "codeViewer.saveFailed": "No se pudo guardar el archivo: {error}",
+  "codeViewer.saveStale":
+    "El archivo cambió en el disco desde que lo abriste. Vuelve a cargarlo antes de guardar.",
+  "codeViewer.reload": "Recargar",
+  "codeViewer.unsavedChanges": "Cambios sin guardar",
+  "codeViewer.editorUnavailable": "El editor de código no está disponible en este momento.",
   "codeBlock.mermaid.ariaLabel": "Diagrama de Mermaid",
   "codeBlock.wrapLines": "Ajustar líneas",
   "codeBlock.copyCode": "Copiar código",
@@ -2429,6 +2447,16 @@ const esES: Record<string, string> = {
   "settings.migration.reason.session_not_found_or_workspace_mismatch":
     "No se encontró la sesión de origen o ya no coincide con el filtro de espacio de trabajo actual.",
   "settings.usageTitle": "Estadísticas de uso",
+  "settings.about.title": "Acerca de y créditos",
+  "settings.about.description":
+    "Versión, licencias y los proyectos de código abierto sobre los que se construye DeepVibe.",
+  "settings.about.app.detail":
+    "{product} — el IDE compañero de programación de {provider}. Un proveedor por app, como compañero en lugar de agente.",
+  "settings.about.builtOn": "Construido sobre código abierto:",
+  "settings.about.support.text": "Puedes apoyar nuestro trabajo invitándonos a un café.",
+  "settings.about.support.button": "Apoyar en Ko-fi",
+  "settings.about.trademark":
+    "DeepVibe es un proyecto independiente y no está afiliado a los proyectos anteriores. DeepSeek, ZCode y MiniMax pertenecen a sus respectivos propietarios.",
   "settings.usageDescription":
     "Consulta la actividad aproximada y el uso de modelos agregados a partir de las sesiones locales.",
   "resourceManager.storage.summaryTotal": "Total usado por DeepVibe",

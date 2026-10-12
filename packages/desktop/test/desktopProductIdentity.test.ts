@@ -34,6 +34,24 @@ test("LamaVibe wird über ZCODE_LAMA_IDENTITY=1 gewählt", () => {
   assert.equal(identity.linuxExecutableName, "lamavibe");
 });
 
+test("KlausVibe wird über ZCODE_KLAUS_IDENTITY=1 gewählt", () => {
+  const env = { ZCODE_ENV: "production", ZCODE_KLAUS_IDENTITY: "1" };
+  assert.equal(resolveDesktopProductFlavor(env), "klaus");
+  const identity = resolveDesktopProductIdentity(env);
+  assert.equal(identity.appId, "eu.klausvibe.ide");
+  assert.equal(identity.productName, "KlausVibe");
+  assert.equal(identity.linuxExecutableName, "klausvibe");
+});
+
+test("MiniVibe wird über ZCODE_MINI_IDENTITY=1 gewählt", () => {
+  const env = { ZCODE_ENV: "production", ZCODE_MINI_IDENTITY: "1" };
+  assert.equal(resolveDesktopProductFlavor(env), "mini");
+  const identity = resolveDesktopProductIdentity(env);
+  assert.equal(identity.appId, "eu.minivibe.ide");
+  assert.equal(identity.productName, "MiniVibe");
+  assert.equal(identity.linuxExecutableName, "minivibe");
+});
+
 test("Kimi hat Vorrang vor Lama", () => {
   const env = {
     ZCODE_ENV: "production",
@@ -41,6 +59,24 @@ test("Kimi hat Vorrang vor Lama", () => {
     ZCODE_LAMA_IDENTITY: "1",
   };
   assert.equal(resolveDesktopProductFlavor(env), "kimi");
+});
+
+test("Kimi hat Vorrang vor Klaus", () => {
+  const env = {
+    ZCODE_ENV: "production",
+    ZCODE_KIMI_IDENTITY: "1",
+    ZCODE_KLAUS_IDENTITY: "1",
+  };
+  assert.equal(resolveDesktopProductFlavor(env), "kimi");
+});
+
+test("Klaus hat Vorrang vor Mini", () => {
+  const env = {
+    ZCODE_ENV: "production",
+    ZCODE_KLAUS_IDENTITY: "1",
+    ZCODE_MINI_IDENTITY: "1",
+  };
+  assert.equal(resolveDesktopProductFlavor(env), "klaus");
 });
 
 test("ohne Schalter bleibt die bisherige Auflösung erhalten", () => {
@@ -55,6 +91,8 @@ test("ungültiger DeepSeek-Schalter schlägt im Build fehl", () => {
 test("resolveLinuxExecutableNameForFlavor nutzt den Flavor, nicht process.env", () => {
   assert.equal(resolveLinuxExecutableNameForFlavor("kimi"), "kimivibe");
   assert.equal(resolveLinuxExecutableNameForFlavor("lama"), "lamavibe");
+  assert.equal(resolveLinuxExecutableNameForFlavor("klaus"), "klausvibe");
+  assert.equal(resolveLinuxExecutableNameForFlavor("mini"), "minivibe");
   assert.equal(resolveLinuxExecutableNameForFlavor("deepseek"), "deepvibe-deepseek");
   assert.equal(resolveLinuxExecutableNameForFlavor("preview"), "deepvibe-preview");
   assert.equal(resolveLinuxExecutableNameForFlavor("production"), "deepvibe");

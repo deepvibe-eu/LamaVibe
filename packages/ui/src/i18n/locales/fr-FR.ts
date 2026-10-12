@@ -1430,6 +1430,10 @@ const frFR: Record<string, string> = {
   "codeViewer.pdf.zoomIn": "Zoom avant",
   "codeViewer.pdf.zoomOut": "Zoom arrière",
   "codeViewer.officeUnavailable": "Ce fichier Office ne peut pas être prévisualisé.",
+  "codeViewer.epubUnavailable": "Impossible d'ouvrir ce livre numérique.",
+  "codeViewer.epub.chapters": "Chapitres : {count}",
+  "codeViewer.epub.prevChapter": "Chapitre précédent",
+  "codeViewer.epub.nextChapter": "Chapitre suivant",
   "codeViewer.officeTooLarge":
     "Ce fichier Office est trop volumineux pour être prévisualisé (maximum 25 Mo).",
   "codeViewer.excel.sheetTabs": "Feuilles du classeur",
@@ -1466,6 +1470,7 @@ const frFR: Record<string, string> = {
   "codeViewer.viewCode": "Afficher le code",
   "codeViewer.viewDiff": "Afficher le diff",
   "codeViewer.openSourcePreview": "Aperçu de la source",
+  "codeViewer.openInBrowser": "Ouvrir dans le navigateur",
   "codeViewer.markdownMode": "Markdown",
   "codeViewer.markdownPreview": "Aperçu",
   "codeViewer.markdownSource": "Source",
@@ -1473,6 +1478,19 @@ const frFR: Record<string, string> = {
   "codeViewer.svgPreview": "Aperçu",
   "codeViewer.svgSource": "Code",
   "codeViewer.wrapLines": "Retour à la ligne automatique",
+  "codeViewer.editMode": "Modifier",
+  "codeViewer.viewMode": "Afficher",
+  "codeViewer.undo": "Annuler",
+  "codeViewer.redo": "Rétablir",
+  "codeViewer.save": "Enregistrer",
+  "codeViewer.saving": "Enregistrement…",
+  "codeViewer.saved": "Fichier enregistré",
+  "codeViewer.saveFailed": "Impossible d'enregistrer le fichier : {error}",
+  "codeViewer.saveStale":
+    "Le fichier a été modifié sur le disque depuis son ouverture. Rechargez-le avant d'enregistrer.",
+  "codeViewer.reload": "Recharger",
+  "codeViewer.unsavedChanges": "Modifications non enregistrées",
+  "codeViewer.editorUnavailable": "L'éditeur de code est actuellement indisponible.",
   "codeBlock.mermaid.ariaLabel": "Diagramme Mermaid",
   "codeBlock.wrapLines": "Retour à la ligne automatique",
   "codeBlock.copyCode": "Copier le code",
@@ -2434,6 +2452,16 @@ const frFR: Record<string, string> = {
   "settings.migration.reason.session_not_found_or_workspace_mismatch":
     "La session source est introuvable ou ne correspond plus au filtre d’espace de travail actuel.",
   "settings.usageTitle": "Statistiques d’utilisation",
+  "settings.about.title": "À propos et crédits",
+  "settings.about.description":
+    "Version, licences et les projets open source sur lesquels DeepVibe est construit.",
+  "settings.about.app.detail":
+    "{product} — l'IDE partenaire de codage {provider}. Un fournisseur par application, comme partenaire plutôt qu'agent.",
+  "settings.about.builtOn": "Basé sur l'open source :",
+  "settings.about.support.text": "Vous pouvez soutenir notre travail en nous offrant un café.",
+  "settings.about.support.button": "Soutenir sur Ko-fi",
+  "settings.about.trademark":
+    "DeepVibe est un projet indépendant et n'est pas affilié aux projets ci-dessus. DeepSeek, ZCode et MiniMax appartiennent à leurs propriétaires respectifs.",
   "settings.usageDescription":
     "Consultez une estimation de l’activité et de l’utilisation des modèles, agrégée à partir des sessions locales.",
   "resourceManager.storage.summaryTotal": "Total utilisé par DeepVibe",

@@ -1,4 +1,5 @@
 /* eslint-disable max-lines -- Electron Builder config keeps related packaging hooks together so build order stays explicit. */
+import { spawnSync } from "node:child_process";
 import { cpSync, existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { readdir, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -80,9 +81,11 @@ const desktopProductFlavor = resolveDesktopProductFlavor({
   ...process.env,
   ZCODE_ENV: builtinProviderConfig.environment,
 });
-// KimiVibe und LamaVibe nutzen eigene Icon-Dateien; DeepVibe/preview die bisherigen.
+// KimiVibe, LamaVibe, KlausVibe und MiniVibe nutzen eigene Icon-Dateien; DeepVibe/preview die bisherigen.
 const isKimiFlavor = desktopProductFlavor === "kimi";
 const isLamaFlavor = desktopProductFlavor === "lama";
+const isKlausFlavor = desktopProductFlavor === "klaus";
+const isMiniFlavor = desktopProductFlavor === "mini";
 const flavorIcons = isKimiFlavor
   ? {
       app: "build/icon_kimi.png",
@@ -107,17 +110,41 @@ const flavorIcons = isKimiFlavor
         macInstaller: "build/icon_lama_installer.icns",
         winInstaller: "build/icon_lama_installer.ico",
       }
-    : {
-        app: "build/icon.png",
-        windows: "build/icon_windows.png",
-        linuxDir: "build/icons",
-        linux512: "build/icons/512x512.png",
-        winTray: "build/icon.ico",
-        win: "build/icon.ico",
-        mac: "build/icon.icns",
-        macInstaller: "build/icon_installer.icns",
-        winInstaller: "build/icon_installer.ico",
-      };
+    : isKlausFlavor
+      ? {
+          app: "build/icon_klaus.png",
+          windows: "build/icon_klaus-windows.png",
+          linuxDir: "build/klaus-icons",
+          linux512: "build/klaus-icons/512x512.png",
+          winTray: "build/icon_klaus.ico",
+          win: "build/icon_klaus.ico",
+          mac: "build/icon_klaus.icns",
+          macInstaller: "build/icon_klaus_installer.icns",
+          winInstaller: "build/icon_klaus_installer.ico",
+        }
+      : isMiniFlavor
+        ? {
+            app: "build/icon_mini.png",
+            windows: "build/icon_mini-windows.png",
+            linuxDir: "build/mini-icons",
+            linux512: "build/mini-icons/512x512.png",
+            winTray: "build/icon_mini.ico",
+            win: "build/icon_mini.ico",
+            mac: "build/icon_mini.icns",
+            macInstaller: "build/icon_mini_installer.icns",
+            winInstaller: "build/icon_mini_installer.ico",
+          }
+        : {
+          app: "build/icon.png",
+          windows: "build/icon_windows.png",
+          linuxDir: "build/icons",
+          linux512: "build/icons/512x512.png",
+          winTray: "build/icon.ico",
+          win: "build/icon.ico",
+          mac: "build/icon.icns",
+          macInstaller: "build/icon_installer.icns",
+          winInstaller: "build/icon_installer.ico",
+        };
 const nativeSearchReleasePlan = resolveNativeSearchReleasePlan({
   platform: targetPlatform.os,
   arch: targetPlatform.arch,
@@ -127,6 +154,16 @@ const macSigningIdentity =
   rawMacSigningIdentity?.replace(/^Developer ID Application:\s*/, "") ?? null;
 const shouldEnableMacSigning =
   process.env.ZCODE_ENABLE_MAC_SIGN === "1" && Boolean(macSigningIdentity);
+// 只有在签名开启且 Apple 凭据齐全时才让 electron-builder 走内置公证；
+// 否则保持未签名/未公证，本地和没有 Secrets 的 CI 仍能正常出包。
+// Built-in notarization handles app -> staple -> dmg/zip ordering correctly.
+const shouldNotarize =
+  shouldEnableMacSigning &&
+  Boolean(
+    process.env.APPLE_ID &&
+      process.env.APPLE_APP_SPECIFIC_PASSWORD &&
+      process.env.APPLE_TEAM_ID,
+  );
 const workspaceRoot = resolve(import.meta.dirname, "../..");
 const desktopPackageRoot = import.meta.dirname;
 const runtimeModuleLookupRoots = [
@@ -636,6 +673,29 @@ export default {
         writeWindowsInstallManifest(context),
       );
     }
+    // 未配置 Developer ID 时用 ad-hoc 签名兜底：Apple Silicon(arm64) 拒绝启动
+    // 未签名的二进制。afterPack 在 electron-builder 生成 dmg/zip 之前运行，且
+    // identity=null 时 electron-builder 不再改动签名，因此这里的结果会进入产物。
+    // 真正签名开启（shouldEnableMacSigning）时跳过，交给 electron-builder。
+    if (context.electronPlatformName === "darwin" && !shouldEnableMacSigning) {
+      const appPath = resolve(
+        context.appOutDir,
+        `${context.packager.appInfo.productFilename}.app`,
+      );
+      runTimedSync("afterPack:adhocSignDarwin", () => {
+        const result = spawnSync(
+          "codesign",
+          ["--force", "--deep", "--sign", "-", appPath],
+          { stdio: "inherit" },
+        );
+        if (result.status !== 0) {
+          throw new Error(
+            `ad-hoc codesign failed for ${appPath} (status ${result.status})`,
+          );
+        }
+      });
+      console.log(`[afterPack] ad-hoc signed ${appPath}`);
+    }
   },
   extraResources: [
     { from: resolve(workspaceRoot, noticesFileName), to: noticesFileName },
@@ -740,11 +800,14 @@ export default {
     // z-code 之前只有本地未签名打包配置，CI 即使注入了证书变量，
     // electron-builder 也不会自动切到 hardened runtime / entitlement 这套发布参数。
     // 这里显式收拢到环境开关，保证本地开发不被签名配置绑死，CI 发布时再按需打开。
+    // 没有 Developer ID 时先跳过 electron-builder 的签名步骤（identity=null），
+    // 改由 afterPack 里用 codesign 做 ad-hoc 签名兜底：Apple Silicon(arm64)
+    // 会拒绝启动完全未签名的二进制。这样不会触发 electron-builder 对空
+    // CSC_* 变量的处理，产物随后直接进 dmg/zip。
     identity: shouldEnableMacSigning ? macSigningIdentity : null,
-    // macOS 产物采用“build 阶段签名 + 独立公证阶段”的两段式流水线。
-    // 如果这里不显式关闭 electron-builder 内置 notarize，它会在 build 阶段读取 Apple 凭据后直接尝试公证，
-    // 并强制要求 APPLE_APP_SPECIFIC_PASSWORD，导致 build 还没产出 DMG 就提前失败。
-    notarize: false,
+    // 仅在凭据齐全时开启内置公证（见上方 shouldNotarize）；凭据缺失时保持 false，
+    // 避免 build 阶段找不到 APPLE_APP_SPECIFIC_PASSWORD 而在产出 DMG 前提前失败。
+    notarize: shouldNotarize,
     hardenedRuntime: shouldEnableMacSigning,
     gatekeeperAssess: false,
     entitlements: "build/entitlements.mac.plist",
@@ -830,6 +893,9 @@ export default {
   },
   nsis: {
     oneClick: false,
+    // 每用户安装会因权限不足写不进（至少一个）图标和脚本，导致安装中断
+    // → 强制全机安装（写 Program Files，需要管理员/UAC），不再提供“仅为我安装”。
+    perMachine: true,
     allowToChangeInstallationDirectory: true,
     // Windows 安装流程使用独立安装图标，和应用运行时图标解耦。
     installerIcon: flavorIcons.winInstaller,

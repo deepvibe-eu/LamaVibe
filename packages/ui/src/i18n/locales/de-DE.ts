@@ -1432,6 +1432,10 @@ const deDE: Record<string, string> = {
   "codeViewer.pdf.zoomIn": "Vergrößern",
   "codeViewer.pdf.zoomOut": "Verkleinern",
   "codeViewer.officeUnavailable": "Diese Office-Datei kann nicht in der Vorschau angezeigt werden.",
+  "codeViewer.epubUnavailable": "Dieses eBook konnte nicht geöffnet werden.",
+  "codeViewer.epub.chapters": "Kapitel: {count}",
+  "codeViewer.epub.prevChapter": "Vorheriges Kapitel",
+  "codeViewer.epub.nextChapter": "Nächstes Kapitel",
   "codeViewer.officeTooLarge": "Diese Office-Datei ist zu groß für die Vorschau (maximal 25 MB).",
   "codeViewer.excel.sheetTabs": "Arbeitsblätter der Arbeitsmappe",
   "codeViewer.loadingPptx": "Präsentationsvorschau wird geladen…",
@@ -1467,6 +1471,7 @@ const deDE: Record<string, string> = {
   "codeViewer.viewCode": "Code anzeigen",
   "codeViewer.viewDiff": "Diff anzeigen",
   "codeViewer.openSourcePreview": "Quelltextvorschau",
+  "codeViewer.openInBrowser": "Im Browser öffnen",
   "codeViewer.markdownMode": "Markdown",
   "codeViewer.markdownPreview": "Vorschau",
   "codeViewer.markdownSource": "Quelltext",
@@ -1474,6 +1479,19 @@ const deDE: Record<string, string> = {
   "codeViewer.svgPreview": "Vorschau",
   "codeViewer.svgSource": "Quellcode",
   "codeViewer.wrapLines": "Zeilen umbrechen",
+  "codeViewer.editMode": "Bearbeiten",
+  "codeViewer.viewMode": "Ansicht",
+  "codeViewer.undo": "Rückgängig",
+  "codeViewer.redo": "Wiederholen",
+  "codeViewer.save": "Speichern",
+  "codeViewer.saving": "Speichern…",
+  "codeViewer.saved": "Datei gespeichert",
+  "codeViewer.saveFailed": "Die Datei konnte nicht gespeichert werden: {error}",
+  "codeViewer.saveStale":
+    "Die Datei wurde seit dem Öffnen auf der Festplatte geändert. Vor dem Speichern neu laden.",
+  "codeViewer.reload": "Neu laden",
+  "codeViewer.unsavedChanges": "Ungespeicherte Änderungen",
+  "codeViewer.editorUnavailable": "Der Code-Editor ist derzeit nicht verfügbar.",
   "codeBlock.mermaid.ariaLabel": "Mermaid-Diagramm",
   "codeBlock.wrapLines": "Zeilen umbrechen",
   "codeBlock.copyCode": "Code kopieren",
@@ -2427,6 +2445,17 @@ const deDE: Record<string, string> = {
   "settings.migration.reason.session_not_found_or_workspace_mismatch":
     "Die Quellsitzung wurde nicht gefunden oder passt nicht mehr zum aktuellen Arbeitsbereichsfilter.",
   "settings.usageTitle": "Nutzungsstatistiken",
+  "settings.about.title": "Über & Danksagungen",
+  "settings.about.description":
+    "Version, Lizenzen und die Open-Source-Projekte, auf denen DeepVibe aufbaut.",
+  "settings.about.app.detail":
+    "{product} — die {provider}-Coding-Partner-IDE. Ein Anbieter pro App, als Partner statt als Agent.",
+  "settings.about.builtOn": "Basiert auf Open Source:",
+  "settings.about.support.text":
+    "Du kannst unsere Arbeit unterstützen, indem du uns mit Koffein versorgst.",
+  "settings.about.support.button": "Auf Ko-fi unterstützen",
+  "settings.about.trademark":
+    "DeepVibe ist ein unabhängiges Projekt und nicht mit den oben genannten Projekten verbunden. DeepSeek, ZCode und MiniMax gehören ihren jeweiligen Eigentümern.",
   "settings.usageDescription":
     "Sieh dir die ungefähre Aktivität und Modellnutzung an, die aus lokalen Sitzungen aggregiert wurde.",
   "resourceManager.storage.summaryTotal": "Gesamt von DeepVibe belegt",
@@ -3496,7 +3525,8 @@ const deDE: Record<string, string> = {
   "settings.modelProvider.loadModels": "Modelle laden",
   "settings.modelProvider.loadModelsPlaceholder": "Modell auswählen…",
   "settings.modelProvider.loadModelsEmpty": "Bei diesem Anbieter wurden keine Modelle gefunden.",
-  "settings.modelProvider.loadModelsError": "Modelle konnten von diesem Anbieter nicht geladen werden.",
+  "settings.modelProvider.loadModelsError":
+    "Modelle konnten von diesem Anbieter nicht geladen werden.",
   "settings.modelProvider.modelId": "Modell-ID",
   "settings.modelProvider.modelDisplayName": "Anzeigename",
   "settings.modelProvider.modelApiFormat.anthropic": "Anthropic Messages",

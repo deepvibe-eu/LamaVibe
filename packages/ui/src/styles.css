@@ -2084,3 +2084,21 @@ html[data-vibe-flavor="lama"].theme-zai-light {
 html[data-vibe-flavor="lama"].theme-zai-dark {
   --color-brand: #d0d0d0;
 }
+
+/* KlausVibe: coral (Claude) brand color */
+html[data-vibe-flavor="klaus"].theme-zai-light {
+  --color-brand: #d97757;
+}
+
+html[data-vibe-flavor="klaus"].theme-zai-dark {
+  --color-brand: #d97757;
+}
+
+/* MiniVibe: teal (MiniMax) brand color */
+html[data-vibe-flavor="mini"].theme-zai-light {
+  --color-brand: #00a0a0;
+}
+
+html[data-vibe-flavor="mini"].theme-zai-dark {
+  --color-brand: #00d4d4;
+}

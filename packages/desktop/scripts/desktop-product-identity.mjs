@@ -27,6 +27,20 @@ export const ZCODE_KIMI_IDENTITY_ENV = "ZCODE_KIMI_IDENTITY";
  */
 export const ZCODE_LAMA_IDENTITY_ENV = "ZCODE_LAMA_IDENTITY";
 
+/**
+ * Build-Zeit-Schalter für die Klaus-Standalone-Identität: eigenes
+ * App-ID/Produktname, in dem nur Claude (Anthropic) als Anbieter sichtbar ist.
+ * Die Reihenfolge der Identitäten ist: preview > kimi > klaus > lama > deepseek > production.
+ */
+export const ZCODE_KLAUS_IDENTITY_ENV = "ZCODE_KLAUS_IDENTITY";
+
+/**
+ * Build-Zeit-Schalter für die Mini-Standalone-Identität: eigenes
+ * App-ID/Produktname, in dem nur MiniMax als Anbieter sichtbar ist.
+ * Die Reihenfolge der Identitäten ist: preview > kimi > klaus > mini > lama > deepseek > production.
+ */
+export const ZCODE_MINI_IDENTITY_ENV = "ZCODE_MINI_IDENTITY";
+
 const PRODUCTION_IDENTITY = Object.freeze({
   flavor: "production",
   appId: "eu.deepvibe.ide",
@@ -72,12 +86,32 @@ const LAMA_IDENTITY = Object.freeze({
   cuaHelperInstallVariant: "lama",
 });
 
+const KLAUS_IDENTITY = Object.freeze({
+  flavor: "klaus",
+  appId: "eu.klausvibe.ide",
+  productName: "KlausVibe",
+  linuxExecutableName: "klausvibe",
+  linuxPackageName: "klausvibe",
+  cuaHelperInstallVariant: "klaus",
+});
+
+const MINI_IDENTITY = Object.freeze({
+  flavor: "mini",
+  appId: "eu.minivibe.ide",
+  productName: "MiniVibe",
+  linuxExecutableName: "minivibe",
+  linuxPackageName: "minivibe",
+  cuaHelperInstallVariant: "mini",
+});
+
 export const desktopProductIdentities = Object.freeze({
   production: PRODUCTION_IDENTITY,
   preview: PREVIEW_IDENTITY,
   deepseek: DEEPSEEK_IDENTITY,
   kimi: KIMI_IDENTITY,
   lama: LAMA_IDENTITY,
+  klaus: KLAUS_IDENTITY,
+  mini: MINI_IDENTITY,
 });
 
 function normalizeDesktopZCodeEnv(env) {
@@ -144,6 +178,34 @@ export function isLamaIdentityRequested(env = process.env) {
   );
 }
 
+/** 与 Preview/DeepSeek/Kimi/Lama 相同的严格开关语义：只有 `1` 开启，空/`0` 关闭，其余构建期报错。 */
+export function isKlausIdentityRequested(env = process.env) {
+  const value = env[ZCODE_KLAUS_IDENTITY_ENV]?.trim() ?? "";
+  if (value === "1") {
+    return true;
+  }
+  if (value === "" || value === "0") {
+    return false;
+  }
+  throw new Error(
+    `invalid ${ZCODE_KLAUS_IDENTITY_ENV}=${env[ZCODE_KLAUS_IDENTITY_ENV]}; expected 1 or 0`,
+  );
+}
+
+/** 与 Preview/DeepSeek/Kimi/Lama/Klaus 相同的严格开关语义：只有 `1` 开启，空/`0` 关闭，其余构建期报错。 */
+export function isMiniIdentityRequested(env = process.env) {
+  const value = env[ZCODE_MINI_IDENTITY_ENV]?.trim() ?? "";
+  if (value === "1") {
+    return true;
+  }
+  if (value === "" || value === "0") {
+    return false;
+  }
+  throw new Error(
+    `invalid ${ZCODE_MINI_IDENTITY_ENV}=${env[ZCODE_MINI_IDENTITY_ENV]}; expected 1 or 0`,
+  );
+}
+
 /**
  * 产品身份（flavor）与后端环境（`ZCODE_ENV`）是两个轴：
  * - `ZCODE_ENV=test` 一律是 Preview，测试后端不能顶着正式 `ZCode` 身份覆盖用户的正式安装；
@@ -153,9 +215,11 @@ export function isLamaIdentityRequested(env = process.env) {
  * Resolution order (explicit identity envs win over ZCODE_ENV default):
  * 1. preview  (ZCODE_PREVIEW_IDENTITY=1)  — highest priority
  * 2. kimi     (ZCODE_KIMI_IDENTITY=1)
- * 3. lama     (ZCODE_LAMA_IDENTITY=1)
- * 4. deepseek (ZCODE_DEEPSEEK_IDENTITY=1)
- * 5. production (ZCODE_ENV=production default) — lowest priority
+ * 3. klaus    (ZCODE_KLAUS_IDENTITY=1)
+ * 4. mini     (ZCODE_MINI_IDENTITY=1)
+ * 5. lama     (ZCODE_LAMA_IDENTITY=1)
+ * 6. deepseek (ZCODE_DEEPSEEK_IDENTITY=1)
+ * 7. production (ZCODE_ENV=production default) — lowest priority
  */
 export function resolveDesktopProductFlavor(env = process.env) {
   if (isPreviewIdentityRequested(env)) {
@@ -163,6 +227,12 @@ export function resolveDesktopProductFlavor(env = process.env) {
   }
   if (isKimiIdentityRequested(env)) {
     return "kimi";
+  }
+  if (isKlausIdentityRequested(env)) {
+    return "klaus";
+  }
+  if (isMiniIdentityRequested(env)) {
+    return "mini";
   }
   if (isLamaIdentityRequested(env)) {
     return "lama";
@@ -217,7 +287,11 @@ export function resolveWindowsAppUserModelIdForFlavor(flavor, runtime = { isPack
           ? "kimi"
           : flavor === "lama"
             ? "lama"
-            : "production";
+            : flavor === "klaus"
+              ? "klaus"
+              : flavor === "mini"
+                ? "mini"
+                : "production";
   return desktopProductIdentities[flavorKey].appId;
 }
 
