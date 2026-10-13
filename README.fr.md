@@ -16,7 +16,19 @@ La famille _Vibe_ propose une application dédiée par fournisseur (DeepVibe pou
 
 ## Téléchargements
 
-Les installateurs pour macOS, Windows et Linux sont publiés dans les [Releases](../../releases). Le programme de mise à jour intégré vérifie ce dépôt.
+Les installateurs pour macOS, Windows et Linux sont disponibles sur la [page des versions](../../releases) ; la version la plus récente est toujours étiquetée **latest** :
+
+| Plateforme | Fichiers |
+| --- | --- |
+| macOS (Apple Silicon) | `LamaVibe-<version>-mac-arm64.dmg` · `LamaVibe-<version>-mac-arm64.zip` |
+| Windows | `LamaVibe-<version>-win-x64.exe` |
+| Linux | `LamaVibe-<version>-linux-x86_64.AppImage` · `LamaVibe-<version>-linux-amd64.deb` · `LamaVibe-<version>-linux-x86_64.rpm` · `LamaVibe-<version>-linux-x64.pkg.tar.zst` |
+
+Chaque application de la famille *Vibe* est publiée avec le **même numéro de version** (actuellement 1.0.3). Le programme de mise à jour intégré vérifie la dernière version de ce dépôt.
+
+> **macOS (Apple Silicon) :** la version est **non signée** (pas de programme Apple Developer payant), donc Gatekeeper
+> avertit au premier lancement. L'application est signée ad-hoc — ouvrez-la une fois via **clic droit → Ouvrir**, ou exécutez
+> `xattr -dr com.apple.quarantine "/Applications/LamaVibe.app"`.
 
 ## Compilation depuis les sources
 
@@ -34,15 +46,15 @@ ZCODE_LAMA_IDENTITY=1 pnpm bundle:desktop -- --os linux --arch x64
 
 LamaVibe communique avec votre serveur [Ollama](https://ollama.com) local à l'adresse `http://localhost:11434/v1`. Le fournisseur intégré **Ollama (Local)** ne nécessite **aucune clé API**.
 
-1. Assurez-vous qu'Ollama est en cours d'exécution et que vous disposez d'au moins un modèle de conversation, par exemple `ollama pull qwen2.5-coder:7b`.
+1. Assurez-vous qu'Ollama est en cours d'exécution et que vous disposez d'au moins un modèle de conversation, par ex. `ollama pull qwen2.5-coder:7b`.
 2. Ouvrez **Paramètres → Fournisseurs de modèles → Ollama (Local) → Ajouter un modèle**.
 3. Cliquez sur **Charger les modèles** pour lister les modèles installés sur votre machine et en choisir un (ou saisissez l'ID du modèle).
 4. Conservez le format d'API sur **Compatible OpenAI (chat completions)**.
 
-**Appels d'outils :** sous *Avancé → Capacités*, vous trouverez un interrupteur **Appels d'outils**. Il est **désactivé par défaut pour les fournisseurs locaux**, car la plupart des modèles locaux ne prennent pas en charge l'appel de fonctions ou l'exposent différemment. Ne l'activez que si votre modèle prend réellement en charge les appels d'outils Ollama — sinon Ollama rejette la requête avec l'erreur HTTP 400 `does not support tools`. Pour une simple conversation, laissez-le désactivé.
+**Appels d'outils :** sous *Avancé → Capacités*, vous trouverez un commutateur **Appels d'outils**. Il est **désactivé par défaut pour les fournisseurs locaux**, car la plupart des modèles locaux ne prennent pas en charge l'appel de fonctions ou l'exposent différemment. Ne l'activez que si votre modèle prend réellement en charge les appels d'outils Ollama — sinon Ollama rejette la requête avec l'erreur HTTP 400 `does not support tools`. Pour une simple conversation, laissez-le désactivé.
 
 **Les modèles d'embedding** tels que `nomic-embed-*` sont destinés à la mémoire et à la recherche sémantique (embeddings), pas à la conversation — choisissez un modèle de conversation pour un fil.
 
 ## Licence et attribution
 
-Basé sur ZCode (Apache-2.0) ; la licence et le NOTICE sont conservés. LamaVibe est un projet indépendant et n'est affilié ni à ZCode/Z.ai ni à Ollama. Ollama est une marque déposée de son propriétaire ; le logo est utilisé avec l'autorisation de l'exploitant.
+Basé sur ZCode (Apache-2.0) ; la licence et le NOTICE sont conservés. LamaVibe est un projet indépendant et n'est affilié ni à ZCode/Z.ai ni à Ollama. Ollama est une marque de son propriétaire ; le logo est utilisé avec l'autorisation de l'exploitant.
