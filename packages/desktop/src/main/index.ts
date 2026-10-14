@@ -1,3 +1,4 @@
+import "./desktopLegacyDataRootMigration.js";
 import { createLocalTtftExporter } from "./localTtftExporter.js";
 /* eslint-disable max-lines */
 import "./desktopEarlyDataBaseDirBootstrap.js";
@@ -268,10 +269,15 @@ if (!app.isPackaged && process.env.ZCODE_DISABLE_FIXED_REMOTE_DEBUGGING_PORT !==
 // Die Identität kommt aus dem Compile-Zeit-Flavor: die ZCODE_*_IDENTITY-Schalter gibt
 // es zur Laufzeit nicht mehr, process.env würde auf deepvibe/preview zurückfallen.
 if (process.platform === "linux") {
-  app.commandLine.appendSwitch(
-    "class",
-    resolveLinuxExecutableNameForFlavor(ZCODE_PRODUCT_FLAVOR),
-  );
+  app.commandLine.appendSwitch("class", resolveLinuxExecutableNameForFlavor(ZCODE_PRODUCT_FLAVOR));
+}
+
+// Linux: frameless/transparent Fenster zittern beim nativen Resize mit dem Standard-ANGLE/OpenGL-Backend;
+// ANGLE/Vulkan ist ruhig (electron/electron#52866). Nur Linux betroffen; macOS/Windows unverändert.
+// Escape-Hatch für Rechner ohne nutzbaren Vulkan-Treiber: ZCODE_DISABLE_VULKAN_BACKEND=1.
+if (process.platform === "linux" && process.env.ZCODE_DISABLE_VULKAN_BACKEND !== "1") {
+  app.commandLine.appendSwitch("use-angle", "vulkan");
+  app.commandLine.appendSwitch("enable-features", "Vulkan,DefaultANGLEVulkan,VulkanFromANGLE");
 }
 
 app.setName(runtimeApplicationName);
@@ -298,7 +304,15 @@ const isKimiFlavor = ZCODE_PRODUCT_FLAVOR === "kimi";
 const isLamaFlavor = ZCODE_PRODUCT_FLAVOR === "lama";
 const isKlausFlavor = ZCODE_PRODUCT_FLAVOR === "klaus";
 const isMiniFlavor = ZCODE_PRODUCT_FLAVOR === "mini";
-const flavorIconSuffix = isKimiFlavor ? "kimi" : isLamaFlavor ? "lama" : isKlausFlavor ? "klaus" : isMiniFlavor ? "mini" : "";
+const flavorIconSuffix = isKimiFlavor
+  ? "kimi"
+  : isLamaFlavor
+    ? "lama"
+    : isKlausFlavor
+      ? "klaus"
+      : isMiniFlavor
+        ? "mini"
+        : "";
 const iconPath =
   process.platform === "win32"
     ? app.isPackaged
@@ -1916,7 +1930,11 @@ app.on("open-url", (event, url) => {
 });
 const gotTheLock = app.requestSingleInstanceLock(createDeepLinkSingleInstanceData(process.argv));
 if (!gotTheLock) {
-  app.quit();
+  // 根因（2026-10-13 日志）：第二个实例拿不到单实例锁时只调了 app.quit()，但模块初始化会
+  // 继续往下跑（深链协议注册、runtime env 准备等），直到 app ready 后才异步退出。
+  // 结果两个 DeepVibe 进程短时并存，用户会以为“旧版本还在运行、关不掉”。
+  // 拿不到锁必须立即硬退出，不能继续初始化。
+  app.exit(0);
 }
 app.on("second-instance", (_event, argv, _workingDirectory, additionalData) => {
   if (

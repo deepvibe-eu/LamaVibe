@@ -35,6 +35,7 @@ import { DesktopTopOverlay } from "@/DesktopTopOverlay.js";
 import { DesktopWindowFrame } from "@/DesktopWindowFrame.js";
 import { WorkspacePluginPreview } from "@/WorkspacePluginPreview.js";
 import { useIsOfficeMode } from "@/hooks/useInterfaceMode.js";
+import { useAvailableRecentProjects } from "@/hooks/useAvailableRecentProjects.js";
 import { GitBranchSwitcher } from "@/GitBranchSwitcher.js";
 import { ScopedErrorBoundary } from "@/ErrorBoundary.js";
 
@@ -214,6 +215,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   onResolveConversationWorkspace,
   onOpenWorkspace,
   onOpenFolderFromWorkspaceMenu,
+  onOpenProject,
   onOpenRemoteWorkspace,
   onCreateScratchWorkspace,
   allowOpenWorkspace = true,
@@ -340,11 +342,16 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   const isLinuxDesktop = Boolean(isDesktop && !isMacDesktop && !isWindowsDesktop);
   // Windows/Linux 也需要外层留白，避免独立面板贴住窗口边缘；桌面统一使用 4px 间距。
   const hasDesktopPanelInset = isMacDesktop || isWindowsDesktop || isLinuxDesktop;
-  const usesInlineWindowControls = Boolean(isWindowsDesktop || isLinuxDesktop);
+  // Wayland 下 main 进程改用原生窗口边框：系统已绘制标题栏/窗控，renderer 全部退让。
+  const hasNativeWindowFrame = Boolean(platform.hasNativeWindowFrame);
+  const usesInlineWindowControls = Boolean(
+    !hasNativeWindowFrame && (isWindowsDesktop || isLinuxDesktop),
+  );
   const workspaceShellRadiusOptions = {
     isMacDesktop,
     isWindowsDesktop,
     isLinuxDesktop,
+    hasNativeWindowFrame,
     macOSMajorVersion: desktopWindowChromeState?.macOSMajorVersion,
   };
   const workspacePanelRadiusPx = resolveWorkspaceShellPanelRadiusPx(workspaceShellRadiusOptions);
@@ -1165,6 +1172,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
   // Git 分支切换器，与旧 ChatView 空态 contextHeaderContent 同构。壳级能力
   // （workspaceTabs / 远程连接回调）在此闭合，pane 只收 ReactNode。
   // onSelectWorkspace 语义与旧版一致：切到目标 workspace 的新草稿。
+  // Switcher data: recent project folders that still exist on disk (probed, fail-open).
+  const availableRecentProjects = useAvailableRecentProjects(workspaceAbsPath, workspaceIdentity);
   const draftComposerHeader = useMemo(
     () => (
       <>
@@ -1182,6 +1191,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
           }
           onSelectConversationWorkspace={handleSelectConversationWorkspace}
           onOpenFolder={onOpenFolderFromWorkspaceMenu}
+          recentProjects={availableRecentProjects}
+          onOpenProject={onOpenProject}
           allowOpenWorkspace={allowOpenWorkspace}
           allowRemoteWorkspace={allowRemoteWorkspace}
           remoteWorkspaceSessions={remoteWorkspaceSessions}
@@ -1234,6 +1245,8 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
       remoteWorkspaceSessions,
       workspaceAbsPath,
       workspaceIdentity,
+      availableRecentProjects,
+      onOpenProject,
       workspaceTabs,
     ],
   );
@@ -1421,6 +1434,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
         isMacDesktop,
         isWindowsDesktop,
         isLinuxDesktop,
+        hasNativeWindowFrame,
         macOSMajorVersion: desktopWindowChromeState?.macOSMajorVersion,
         isWindowsMaximized: desktopWindowChromeState?.isMaximized ?? false,
         supportsNativeRoundedCorners:
@@ -1514,6 +1528,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
       isDesktop={isDesktop}
       isMacDesktop={isMacDesktop}
       isWindowsDesktop={isWindowsDesktop}
+      hasNativeWindowFrame={hasNativeWindowFrame}
       headerTestId={TID_APP_HEADER}
     >
       <div
@@ -1676,6 +1691,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
                             isMacDesktop,
                             isWindowsDesktop,
                             isLinuxDesktop,
+                            hasNativeWindowFrame,
                             macOSMajorVersion: desktopWindowChromeState?.macOSMajorVersion,
                             isWindowsMaximized: desktopWindowChromeState?.isMaximized ?? false,
                             supportsNativeRoundedCorners:
@@ -1724,6 +1740,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
                           isMacDesktop={isMacDesktop}
                           isMacFullscreen={isMacFullscreen}
                           isWindowsDesktop={isWindowsDesktop}
+                          hasNativeWindowFrame={hasNativeWindowFrame}
                           windowsWindowControlsRightPaddingPx={windowsWindowControlsRightPaddingPx}
                           isDesktop={isDesktop}
                           isSidebarVisible={isSidebarVisible}
@@ -1908,6 +1925,7 @@ export const WorkspaceShellLayout = memo(function WorkspaceShellLayoutComponent(
                             isMacDesktop,
                             isWindowsDesktop,
                             isLinuxDesktop,
+                            hasNativeWindowFrame,
                             macOSMajorVersion: desktopWindowChromeState?.macOSMajorVersion,
                             isWindowsMaximized: desktopWindowChromeState?.isMaximized ?? false,
                             supportsNativeRoundedCorners:
