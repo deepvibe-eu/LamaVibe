@@ -12,11 +12,11 @@
 
 LamaVibe ist der **Ollama-Build** der _Vibe_-Familie — ein Fork von ZCode, der sich auf einen einzigen Anbieter konzentriert: **Ollama** (lokale Modelle). Ein Modell, ein Arbeitsbereich, ein Partner — kein Agent.
 
-Die _Vibe_-Familie liefert eine fokussierte App pro Anbieter (DeepVibe für DeepSeek, KimiVibe für Kimi, LamaVibe für Ollama, MiniVibe für MiniMax, KlausVibe für Claude, …), jede mit ihrem eigenen Charakter. Sie existiert **neben** ZCode, nicht an dessen Stelle: ZCode für den Multi-Provider-Workflow, die Vibe-Apps für Menschen, die ein Modell, einen Arbeitsbereich, einen Partner wollen. Den vollständigen Codebestand findest du im Hauptquellcode-Repository.
+Die _Vibe_-Familie liefert eine fokussierte App pro Anbieter (DeepVibe für DeepSeek, KimiVibe für Kimi, LamaVibe für Ollama, MiniVibe für MiniMax, KlausVibe für Claude, …), jede mit ihrem eigenen Charakter. Sie existiert **neben** ZCode, nicht an dessen Stelle: ZCode für den Multi-Provider-Workflow, die Vibe-Apps für alle, die ein Modell, einen Arbeitsbereich, einen Partner wollen. Den vollständigen Codebestand findest du im Hauptquellcode-Repository.
 
 ## Downloads
 
-Installer für macOS, Windows und Linux findest du auf der [Releases-Seite](../../releases); das neueste Release ist immer mit **latest** getaggt:
+Installer für macOS, Windows und Linux findest du auf der [Releases-Seite](../../releases); die neueste Version ist immer mit **latest** getaggt:
 
 | Plattform | Dateien |
 | --- | --- |
@@ -26,8 +26,8 @@ Installer für macOS, Windows und Linux findest du auf der [Releases-Seite](../.
 
 Jede App der *Vibe*-Familie wird mit der **gleichen Versionsnummer** veröffentlicht (derzeit 1.0.5). Der integrierte Updater prüft das neueste Release dieses Repositorys.
 
-> **macOS (Apple Silicon):** Der Build ist **unsigniert** (kein kostenpflichtiges Apple Developer Program), daher warnt Gatekeeper
-> beim ersten Start. Die App ist ad-hoc signiert — öffne sie einmal über **Rechtsklick → Öffnen** oder führe
+> **macOS (Apple Silicon):** Der Build ist **unsigniert** (kein kostenpflichtiges Apple Developer Program), daher warnt
+> Gatekeeper beim ersten Start. Die App ist ad-hoc signiert — öffne sie einmal über **Rechtsklick → Öffnen** oder führe
 > `xattr -dr com.apple.quarantine "/Applications/LamaVibe.app"` aus.
 
 ## Aus dem Quellcode bauen
@@ -51,10 +51,10 @@ LamaVibe kommuniziert mit deinem lokalen [Ollama](https://ollama.com)-Server unt
 3. Klicke auf **Modelle laden**, um die auf deinem Rechner installierten Modelle aufzulisten und eines auszuwählen (oder gib die Modell-ID ein).
 4. Belasse das API-Format bei **OpenAI-kompatibel (Chat Completions)**.
 
-**Tool-Aufrufe:** Unter *Erweitert → Fähigkeiten* findest du einen Schalter **Tool-Aufrufe**. Er ist **standardmäßig für lokale Anbieter deaktiviert**, weil die meisten lokalen Modelle entweder keine Funktionsaufrufe unterstützen oder sie anders bereitstellen. Aktiviere ihn nur, wenn dein Modell wirklich Ollama-Tool-Aufrufe unterstützt — andernfalls lehnt Ollama die Anfrage mit HTTP 400 `does not support tools` ab. Für reines Chatten lass ihn aus.
+**Tool-Aufrufe:** Unter *Erweitert → Fähigkeiten* findest du einen Schalter **Tool-Aufrufe**. Er ist **standardmäßig für lokale Anbieter deaktiviert**, da die meisten lokalen Modelle entweder keine Funktionsaufrufe unterstützen oder diese anders bereitstellen. Aktiviere ihn nur, wenn dein Modell Ollama-Tool-Aufrufe wirklich unterstützt — andernfalls lehnt Ollama die Anfrage mit HTTP 400 `does not support tools` ab. Für reines Chatten lass ihn deaktiviert.
 
-**Embedding-Modelle** wie `nomic-embed-*` sind für Speicher und semantische Suche (Embeddings) gedacht, nicht zum Chatten — wähle für einen Thread ein Chat-Modell.
+**Embedding-Modelle** wie `nomic-embed-*` sind für Gedächtnis und semantische Suche (Embeddings) gedacht, nicht zum Chatten — wähle für einen Thread ein Chat-Modell.
 
 ## Lizenz & Namensnennung
 
-Basiert auf ZCode (Apache-2.0); die Lizenz und der NOTICE-Hinweis bleiben erhalten. LamaVibe ist ein unabhängiges Projekt und steht in keiner Verbindung zu ZCode/Z.ai oder Ollama. Ollama ist eine Marke ihres Inhabers; das Logo wird mit Erlaubnis des Betreibers verwendet.
+Basiert auf ZCode (Apache-2.0); Lizenz und NOTICE bleiben erhalten. LamaVibe ist ein unabhängiges Projekt und steht in keiner Verbindung zu ZCode/Z.ai oder Ollama. Ollama ist eine Marke ihres Inhabers; das Logo wird mit Erlaubnis des Betreibers verwendet.
