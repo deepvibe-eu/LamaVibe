@@ -42,7 +42,7 @@ pnpm dev:desktop:lama
 ZCODE_LAMA_IDENTITY=1 pnpm bundle:desktop -- --os linux --arch x64
 ```
 
-## Utilisation de modèles locaux
+## Utilisation des modèles locaux
 
 LamaVibe communique avec votre serveur [Ollama](https://ollama.com) local à l'adresse `http://localhost:11434/v1`. Le fournisseur intégré **Ollama (Local)** ne nécessite **aucune clé API**.
 
@@ -57,4 +57,4 @@ Les **modèles d'embedding** tels que `nomic-embed-*` sont destinés à la mémo
 
 ## Licence et attribution
 
-Basé sur ZCode (Apache-2.0) ; la licence et le fichier NOTICE sont conservés. LamaVibe est un projet indépendant et n'est affilié ni à ZCode/Z.ai ni à Ollama. Ollama est une marque de son propriétaire ; le logo est utilisé avec l'autorisation de l'exploitant.
+Basé sur ZCode (Apache-2.0) ; la licence et le NOTICE sont conservés. LamaVibe est un projet indépendant et n'est affilié ni à ZCode/Z.ai ni à Ollama. Ollama est une marque de son propriétaire ; le logo est utilisé avec l'autorisation de l'exploitant.
