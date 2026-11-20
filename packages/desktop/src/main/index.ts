@@ -138,7 +138,11 @@ import {
 import type { DesktopWindowSize } from "./desktopWindowSize.js";
 import { maybeWarnArchitectureMismatch } from "./desktopArchitectureGuard.js";
 import { maybeBlockStartupForForceUpdate } from "./forceUpdateGuard.js";
-import { createWindowsDesktopTray, updateWindowsDesktopTrayMenu } from "./desktopTray.js";
+import {
+  createDesktopTray,
+  hasDesktopTray,
+  updateDesktopTrayMenu,
+} from "./desktopTray.js";
 import { createWindowsCuaOperationIndicator } from "./windowsCuaOperationIndicator.js";
 import {
   configureDockMenu,
@@ -1483,7 +1487,7 @@ function rebuildMenu() {
       });
     },
   );
-  updateWindowsDesktopTrayMenu();
+  updateDesktopTrayMenu();
 }
 
 function resolveFocusedDesktopZoomLevel(): number {
@@ -1727,6 +1731,7 @@ function createWindowInstance(startupBootstrap: StartupWindowBootstrap = {}) {
         forceQuit: forceQuitRef.current,
         explicitQuitRequested: explicitQuitRef.current,
         closeToTrayOnWindows,
+        hasDesktopTray,
         isLastWindow: getMainApplicationWindows().length === 1,
         label,
         logger,
@@ -2093,7 +2098,7 @@ app.whenReady().then(async () => {
       ),
     () => showCurrentWindowFromDock(primaryWindowCoordinator),
   );
-  createWindowsDesktopTray({
+  createDesktopTray({
     getLocale: () => currentApplicationLocale,
     showCurrentWindow: () =>
       primaryWindowCoordinator.ensurePrimaryWindow("tray-show-current-window"),
@@ -2307,7 +2312,11 @@ app.whenReady().then(async () => {
   const forceUpdateGuardResult =
     ZCODE_PRODUCT_FLAVOR === "production" && !skipForceUpdateForLocalDevRuntime
       ? await maybeBlockStartupForForceUpdate({
-          locale: currentApplicationLocale,
+          // Ohne gespeicherte Locale ist currentApplicationLocale noch DEFAULT_LOCALE (zh-CN).
+          // Der Update-Prompt soll dann die Systemsprache zeigen, nicht Chinesisch.
+          locale: loadedBootstrapLocale
+            ? currentApplicationLocale
+            : resolveSystemApplicationLocale(),
           logger,
           endpointOrigin: await resolveCurrentZCodeEndpointOrigin(),
           onBlocked: () => {
