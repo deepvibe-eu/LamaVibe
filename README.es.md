@@ -24,7 +24,7 @@ Los instaladores para macOS, Windows y Linux están en la [página de versiones]
 | Windows | `LamaVibe-<version>-win-x64.exe` |
 | Linux | `LamaVibe-<version>-linux-x86_64.AppImage` · `LamaVibe-<version>-linux-amd64.deb` · `LamaVibe-<version>-linux-x86_64.rpm` · `LamaVibe-<version>-linux-x64.pkg.tar.zst` |
 
-Todas las aplicaciones de la familia *Vibe* se publican con el **mismo número de versión** (actualmente 1.0.5). El actualizador integrado comprueba la última versión de este repositorio.
+Todas las aplicaciones de la familia *Vibe* se publican con el **mismo número de versión** (actualmente 1.0.8). El actualizador integrado comprueba la última versión de este repositorio.
 
 > **macOS (Apple Silicon):** la compilación **no está firmada** (sin el Apple Developer Program de pago), por lo que Gatekeeper
 > muestra una advertencia en el primer inicio. La aplicación está firmada de forma ad-hoc — ábrela una vez mediante **clic derecho → Abrir**, o ejecuta
